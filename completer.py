@@ -26,6 +26,9 @@ class ComplOption:
         :param parts: right side of command line, here it should be empty
         :return: None
         """
+        if len(self.name)==0:
+            print('no default implementation for this nameless option')
+            return
         print("connecting to submenu '%s'" % self.name)
         logging.debug("create completer for '%s'" % self.name)
         # TODO: create a new completer at this stage and execute it
@@ -83,7 +86,7 @@ class Completer():
         self.fill = []
         line = readline.get_line_buffer()
         fields = line.split()
-        if text == fields[-1]:
+        if len(text)>0 and (text == fields[-1]):
             fields=fields[:-1]
         logging.debug("line was '%s' parts were '%s'" % (line,pprint.pformat(fields)))
         option = self.rootOption
@@ -112,7 +115,8 @@ class Completer():
             self.startOptions(text)
         if stage >= len(self.fill):
             return None
-        return self.fill[stage]
+        # adding a space adds a space to the completion
+        return self.fill[stage]+' '
 
     def add(self, other: ComplOption):
         logging.debug("adding '%s' to /" % other.name)
@@ -146,9 +150,14 @@ class Completer():
             logging.debug(' exec %s with %s' % (option.name, pprint.pformat(token)))
             option.exec(token)
 
+def listRootOptions(args):
+    print(' got {}, but use one of those:'.format(args))
+    for opt in rootCompleter.rootOption.options:
+        print('   {}'.format(opt))
 
 # noinspection PyTypeChecker
 rootCompleter: 'Completer' = None
+
 
 def init_completer():
     global rootCompleter
@@ -157,3 +166,4 @@ def init_completer():
     readline.set_completer(lambda txt, st: rootCompleter.complete(txt, st))
     logging.debug('adding a root completer')
     rootCompleter = Completer()
+    rootCompleter.rootOption.exec=listRootOptions

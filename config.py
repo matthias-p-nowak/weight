@@ -55,12 +55,12 @@ def listConfig(args: list[str]):
     for key in Config:
         if maxKeyLength < len(key):
             maxKeyLength = len(key)
-    f = "  {:>" + str(maxKeyLength) + "s} = {:s}"
+    f = "  {:>" + str(maxKeyLength) + "s} = {:}"
     for key in Config:
         print(f.format(key, Config[key]))
 
 
-class DelConfig(completer.ComplOption):
+class DelConfigOpt(completer.ComplOption):
     """
     A completer options for deleting values
     """
@@ -83,7 +83,7 @@ class DelConfig(completer.ComplOption):
             logging.debug("deleting {}".format(key))
             Config.pop(key, None)
 
-class GetConfig(DelConfig):
+class GetConfigOpt(DelConfigOpt):
     """
     completer option for getting values
     """
@@ -98,7 +98,7 @@ class GetConfig(DelConfig):
         for key in args:
             print(f.format(key, Config[key]))
 
-class SetConfig(completer.ComplOption):
+class SetConfigOpt(completer.ComplOption):
     """
     Setting options, alternatively name value
     """
@@ -150,13 +150,13 @@ def init_config():
     cmdLst.exec = listConfig
     cfg.add(cmdLst)
     # ---
-    cmdSet = SetConfig('set', final=True)
+    cmdSet = SetConfigOpt('set', final=True)
     cfg.add(cmdSet)
     # ---
-    cmdDel = DelConfig('delete', final=True)
+    cmdDel = DelConfigOpt('delete', final=True)
     cfg.add(cmdDel)
     # ---
-    cmdGet = GetConfig('get', final=True)
+    cmdGet = GetConfigOpt('get', final=True)
     cfg.add(cmdGet)
     # ---
     completer.rootCompleter.add(cfg)
