@@ -4,6 +4,7 @@ import logging
 import completer
 import config
 import data
+import plot
 
 if __name__ == '__main__':
     atexit.register(print, 'good bye')
@@ -13,4 +14,5 @@ if __name__ == '__main__':
     completer.init_completer()
     config.init_config()
     data.init_data()
+    plot.init_plot()
     completer.rootCompleter.run()
