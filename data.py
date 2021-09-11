@@ -1,7 +1,10 @@
 import atexit
+import datetime
 import logging
 import os.path
 import sqlite3
+import time
+from tabnanny import check
 
 import completer
 import config
@@ -91,6 +94,19 @@ def deleteItem(args):
         con.execute('delete from weight where t=?',(rows[pos][0],))
         con.commit()
 
+def keepItems(args):
+    con=checkData()
+    kd=input('specify number of days >')
+    if kd.isnumeric():
+        kd=int(kd)
+        dt=datetime.datetime.now()
+        td=datetime.timedelta(days=kd)
+        dt=dt-td
+        print('deleting items older than {}'.format(dt))
+        con.execute('delete from weight where t < ?',(dt,))
+        con.commit()
+
+
 def init_data():
     logging.debug('initializing data module')
     dataOpt = completer.ComplOption('data')
@@ -104,3 +120,6 @@ def init_data():
     delOpt = completer.ComplOption('delete', final=True)
     delOpt.exec = deleteItem
     dataOpt.add(delOpt)
+    keepOpt=completer.ComplOption('keep',final=True)
+    keepOpt.exec=keepItems
+    dataOpt.add(keepOpt)
