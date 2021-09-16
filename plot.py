@@ -12,7 +12,7 @@ import data
 def simplePlot(args):
     logging.debug('plotting')
     con=data.checkData()
-    rows=con.execute('select t,w from weight order by t').fetchall()
+    rows=con.execute("select datetime(t,'localtime') as tt,w from weight order by tt").fetchall()
     x=[]
     y=[]
     for row in rows:

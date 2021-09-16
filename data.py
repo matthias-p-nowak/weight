@@ -69,7 +69,7 @@ def addWeight(args: list[str]):
 
 def listWeights(args):
     con = checkData()
-    rows=con.execute('select t,w from weight').fetchall()
+    rows=con.execute("select datetime(t,'localtime'),w from weight").fetchall()
     num = config.getConfig('data.listLast', 7)
     num = int(num)
     rows = rows[-num:]
@@ -82,7 +82,7 @@ def deleteItem(args):
     if con is None:
         print('no database')
         exit(2)
-    rows = con.execute('select t,w from weight').fetchall()
+    rows = con.execute("select datetime(t,'localtime'),w,t from weight").fetchall()
     num = config.getConfig('data.listLast', 7)
     num = int(num)
     rows = rows[-num:]
@@ -91,7 +91,7 @@ def deleteItem(args):
     pos=input('delete item >')
     if pos.isnumeric():
         pos=int(pos)
-        con.execute('delete from weight where t=?',(rows[pos][0],))
+        con.execute('delete from weight where t=?',(rows[pos][2],))
         con.commit()
 
 def keepItems(args):
